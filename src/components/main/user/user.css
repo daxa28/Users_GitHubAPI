@@ -1,0 +1,38 @@
+.user {
+  width: calc((100% / 3) - 34px);
+  margin: 5px;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 7px;
+  text-align: center;
+}
+
+.user img {
+  margin-top: 10px;
+  border-radius: 50%;
+  width: 33%;
+  border: 1px solid white;
+  background: white;
+}
+
+.user h4 {
+  word-break: break-all;
+  margin: 10px 0;
+  color: white;
+}
+
+.user:hover {
+  box-shadow: 0px 0px 5px 0px white;
+}
+
+@media screen and (max-width: 700px) {
+  .user {
+    width: calc((100% / 2) - 34px);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .user {
+    width: calc((100% / 1) - 34px);
+  }
+}
