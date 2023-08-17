@@ -9,6 +9,7 @@ import git_icon from "../../img/git-icon1.png";
 import uparrow from "../../img/up_arrow_icon.png";
 import downarrow from "../../img/down_arrow_icon.png";
 import Search from "./search/Search";
+import CountDown from "../CountDown";
 
 function Main() {
   const [searchValue, setSearchValue] = useState("");
@@ -18,6 +19,7 @@ function Main() {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user.items);
   const isFetching = useSelector((state) => state.user.isFetching);
+  const isError = useSelector((state) => state.user.isError);
   const currentPage = useSelector((state) => state.user.currentPage);
   const perPage = useSelector((state) => state.user.perPage);
   const totalCount = useSelector((state) => state.user.totalCount);
@@ -33,19 +35,13 @@ function Main() {
 
   function searchHendler() {
     dispatch(setCurrentPage(1));
-    dispatch(getUser(searchValue, order, currentPage, perPage));
+    // dispatch(getUser(searchValue, order, currentPage, perPage));
   }
 
-  function orderAscHendler() {
+  function orderHendler(order) {
     dispatch(setCurrentPage(1));
-    setOrder("asc");
-    setIsSort(false);
-  }
-
-  function orderDescHendler() {
-    dispatch(setCurrentPage(1));
-    setOrder("desc");
-    setIsSort(true);
+    setOrder(order);
+    setIsSort(() => !isSort);
   }
 
   return (
@@ -55,70 +51,80 @@ function Main() {
         <h2>Пользователи GitHub</h2>
       </div>
       <div className="hr"></div>
-      <div className="panel">
-        {isSort ? (
-          <button className="btn" onClick={() => orderAscHendler()}>
-            <img src={downarrow} alt="downarrow-icon" />
-          </button>
-        ) : (
-          <button className="btn" onClick={() => orderDescHendler()}>
-            <img src={uparrow} alt="uparrow-icon" />
-          </button>
-        )}
-        <Search
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          searchHendler={searchHendler}
-        />
-      </div>
-
-      {isFetching ? (
-        <div className="loader">
-          <div className="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
+      {isError ? (
+        <div>
+          <CountDown hours={0} minutes={1} />
         </div>
       ) : (
         <Fragment>
-          {users.length === 0 ? (
-            <div>
-              <h3>Пользователи не найдены</h3>
+          <div className="panel">
+            {isSort ? (
+              <button className="btn" onClick={() => orderHendler("asc")}>
+                <img src={downarrow} alt="downarrow-icon" />
+              </button>
+            ) : (
+              <button className="btn" onClick={() => orderHendler("desc")}>
+                <img src={uparrow} alt="uparrow-icon" />
+              </button>
+            )}
+            <Search
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              searchHendler={searchHendler}
+            />
+          </div>
+
+          {isFetching ? (
+            <div className="loader">
+              <div className="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
             </div>
           ) : (
             <Fragment>
-              <div className="block_users">
-                {users.map((user) => (
-                  <User user={user} key={user.login} />
-                ))}
-              </div>
-              <div className="pages">
-                {currentPage > 5 ? (
-                  <span style={{ margin: "0 5px", cursor: "default" }}>
-                    ...
-                  </span>
-                ) : (
-                  <Fragment></Fragment>
-                )}
-                {pages.map((page, index) => (
-                  <span
-                    key={index}
-                    className={currentPage === page ? "current-page" : "page"}
-                    onClick={() => dispatch(setCurrentPage(page))}
-                  >
-                    {page}
-                  </span>
-                ))}
-                {pages.length < 10 ? (
-                  <Fragment></Fragment>
-                ) : (
-                  <span style={{ margin: "0 5px", cursor: "default" }}>
-                    ...
-                  </span>
-                )}
-              </div>
+              {users.length === 0 ? (
+                <div>
+                  <h3>Пользователи не найдены</h3>
+                </div>
+              ) : (
+                <Fragment>
+                  <div className="block_users">
+                    {users.map((user) => (
+                      <User user={user} key={user.login} />
+                    ))}
+                  </div>
+                  <div className="pages">
+                    {currentPage > 5 ? (
+                      <span style={{ margin: "0 5px", cursor: "default" }}>
+                        ...
+                      </span>
+                    ) : (
+                      <Fragment></Fragment>
+                    )}
+                    {pages.map((page, index) => (
+                      <span
+                        key={index}
+                        className={
+                          currentPage === page ? "current-page" : "page"
+                        }
+                        onClick={() => dispatch(setCurrentPage(page))}
+                      >
+                        {page}
+                      </span>
+                    ))}
+                    {pages.length < 10 ? (
+                      <Fragment></Fragment>
+                    ) : (
+                      <span style={{ margin: "0 5px", cursor: "default" }}>
+                        ...
+                      </span>
+                    )}
+                  </div>
+                </Fragment>
+              )}
             </Fragment>
           )}
         </Fragment>

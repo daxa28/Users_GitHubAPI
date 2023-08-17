@@ -20,6 +20,7 @@ function Card() {
       <button className="btn" onClick={() => navigate(-1)}>
         <img src={leftarrow} alt="leftarrow-icon" />
       </button>
+      
 
       <div className="hr" />
       <div className="card">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setIsFetching, setUser } from "../../reducers/userReducer";
+import { setIsError, setIsFetching, setUser } from "../../reducers/userReducer";
 
 export const getUser = (
   searchQuery = "repos:%3E42",
@@ -12,10 +12,18 @@ export const getUser = (
       searchQuery = "repos:%3E42";
     }
     dispatch(setIsFetching(true));
-    const response = await axios.get(
-      `https://api.github.com/search/users?q=${searchQuery}&sort=repositories&order=${order}&per_page=${perPage}&page=${currentPage}`
-    );
-    dispatch(setUser(response.data));
+    try {
+      const response = await axios.get(
+        `https://api.github.com/search/users?q=${searchQuery}&sort=repositories&order=${order}&per_page=${perPage}&page=${currentPage}`
+      );
+      dispatch(setIsError(false))
+
+      dispatch(setUser(response.data));
+    } catch (e) {
+      dispatch(setIsFetching(false))
+      dispatch(setIsError(true))
+
+    }
   };
 };
 
