@@ -14,7 +14,9 @@ import CountDown from "../CountDown";
 function Main() {
   const [searchValue, setSearchValue] = useState("");
   const [isSort, setIsSort] = useState(true);
+  const [isSearch, setIsSearch] = useState(true);
   const [order, setOrder] = useState("desc");
+
 
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user.items);
@@ -22,7 +24,8 @@ function Main() {
   const isError = useSelector((state) => state.user.isError);
   const currentPage = useSelector((state) => state.user.currentPage);
   const perPage = useSelector((state) => state.user.perPage);
-  const totalCount = useSelector((state) => state.user.totalCount);
+  const totalCount = useSelector((state) => state.user.totalCount)
+  
 
   const pagesCount = Math.ceil(totalCount / perPage);
   const pages = [];
@@ -31,10 +34,11 @@ function Main() {
 
   useEffect(() => {
     dispatch(getUser(searchValue, order, currentPage, perPage));
-  }, [currentPage, order]);
+  }, [currentPage, order, isSearch]);
 
   function searchHendler() {
     dispatch(setCurrentPage(1));
+    setIsSearch(()=>!isSearch)
     // dispatch(getUser(searchValue, order, currentPage, perPage));
   }
 
